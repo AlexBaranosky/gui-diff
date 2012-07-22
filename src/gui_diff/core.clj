@@ -28,10 +28,8 @@
 (defn gui-diff
   "Display a visual diff of two data structures, using Mac's FileMerge tool."
   [a b]
-  (let [file-a (File. "/tmp/a.txt")
-        file-b (File. "/tmp/b.txt")
-        a-pp (with-out-str (pp/pprint (nested-sort a)))
+  (let [a-pp (with-out-str (pp/pprint (nested-sort a)))
         b-pp (with-out-str (pp/pprint (nested-sort b)))]
-    (spit file-a a-pp)
-    (spit file-b b-pp)
+    (spit (File. "/tmp/a.txt") a-pp)
+    (spit (File. "/tmp/b.txt") b-pp)
     (.start (Thread. (fn [] (sh/sh "opendiff" "/tmp/a.txt" "/tmp/b.txt"))))))
