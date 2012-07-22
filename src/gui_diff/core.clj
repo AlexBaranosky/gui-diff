@@ -25,6 +25,18 @@
     :else
     x))
 
+(defn- diff-prog 
+  "Returns a vector of diff program name with params that is used to show the diff
+   Ubuntu - try to use meld, fallback on diff
+   Mac - opendiff"
+  [fn1 fn2]
+  (if (= "Linux" (System/getProperty "os.name"))
+    (if (= 0 (:exit(sh/sh "which" "meld")))
+      ["meld" fn1 fn2]
+      ["xterm" "-e"
+       (apply str "diff " fn1 " " fn2 ";read -p 'press Enter to continue'")])
+    ["opendiff" fn1 fn2]))
+             
 (defn gui-diff
   "Display a visual diff of two data structures, using Mac's FileMerge tool."
   [a b]
@@ -32,4 +44,4 @@
         b-pp (with-out-str (pp/pprint (nested-sort b)))]
     (spit (File. "/tmp/a.txt") a-pp)
     (spit (File. "/tmp/b.txt") b-pp)
-    (.start (Thread. (fn [] (sh/sh "opendiff" "/tmp/a.txt" "/tmp/b.txt"))))))
+    (.start (Thread. (fn [] (apply sh/sh (diff-prog "/tmp/a.txt" "/tmp/b.txt")))))))
