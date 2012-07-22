@@ -41,7 +41,11 @@
   "Display a visual diff of two data structures, using Mac's FileMerge tool."
   [a b]
   (let [a-pp (with-out-str (pp/pprint (nested-sort a)))
-        b-pp (with-out-str (pp/pprint (nested-sort b)))]
-    (spit (File. "/tmp/a.txt") a-pp)
-    (spit (File. "/tmp/b.txt") b-pp)
-    (.start (Thread. (fn [] (apply sh/sh (diff-prog "/tmp/a.txt" "/tmp/b.txt")))))))
+        b-pp (with-out-str (pp/pprint (nested-sort b)))
+        f1 (File/createTempFile "a_gui_diff" ".txt")
+        f2 (File/createTempFile "b_gui_diff" ".txt")
+        fn1 (.getCanonicalPath f1)
+        fn2 (.getCanonicalPath f2)]
+    (spit f1 a-pp)
+    (spit f2 b-pp)
+    (.start (Thread. (fn [] (apply sh/sh (diff-prog fn1 fn2)))))))
