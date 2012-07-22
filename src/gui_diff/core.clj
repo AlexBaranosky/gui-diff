@@ -22,15 +22,16 @@
       (into (sorted-map) (map-values nested-sort x))
       (map-values nested-sort x))
 
-    :else))
+    :else
+    x))
 
 (defn gui-diff
   "Display a visual diff of two data structures, using Mac's FileMerge tool."
   [a b]
   (let [file-a (File. "/tmp/a.txt")
         file-b (File. "/tmp/b.txt")
-        a-pp (with-out-str (pp/pprint (nested-sort (read-string a))))
-        b-pp (with-out-str (pp/pprint (nested-sort (read-string b))))]
+        a-pp (with-out-str (pp/pprint (nested-sort a)))
+        b-pp (with-out-str (pp/pprint (nested-sort b)))]
     (spit file-a a-pp)
     (spit file-b b-pp)
 
