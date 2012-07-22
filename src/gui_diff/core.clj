@@ -34,5 +34,4 @@
         b-pp (with-out-str (pp/pprint (nested-sort b)))]
     (spit file-a a-pp)
     (spit file-b b-pp)
-
-    (sh/sh "opendiff" "/tmp/a.txt" "/tmp/b.txt")))
+    (.start (Thread. (fn [] (sh/sh "opendiff" "/tmp/a.txt" "/tmp/b.txt"))))))
