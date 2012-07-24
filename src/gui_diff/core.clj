@@ -3,9 +3,7 @@
             [clojure.java.shell :as sh])
   (:import java.io.File))
 
-(defn- map-values
-  "Apply a function on all values of a map and return the corresponding map (all keys untouched)"
-  [f m]
+(defn- map-values [f m]
   (zipmap
     (keys m)
     (map f (vals m))))
@@ -25,27 +23,26 @@
     :else
     x))
 
-(defn- diff-prog 
-  "Returns a vector of diff program name with params that is used to show the diff
-   Ubuntu - try to use meld, fallback on diff
-   Mac - opendiff"
-  [fn1 fn2]
-  (if (= "Linux" (System/getProperty "os.name"))
-    (if (= 0 (:exit(sh/sh "which" "meld")))
-      ["meld" fn1 fn2]
-      ["xterm" "-e"
-       (apply str "diff " fn1 " " fn2 ";read -p 'press Enter to continue'")])
-    ["opendiff" fn1 fn2]))
-             
+(defn- diff-prog [filename-1 filename-2]
+  (let [os (System/getProperty "os.name")]
+    (case os
+      "Mac OS X" ["opendiff" filename-1 filename-2]
+      "Linux" (if (= 0 (:exit (sh/sh "which" "meld")))
+                ["meld" filename-1 filename-2]
+                ["xterm" "-e"
+                 (apply str "diff " filename-1 " " filename-2 ";read -p 'press Enter to continue'")])
+      (throw (Exception. (str "gui-diff does not support your OS: " os))))))
+
 (defn gui-diff
-  "Display a visual diff of two data structures, using Mac's FileMerge tool."
+  "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
+   On Linux, first tries to use Meld, then falls back to diff."
   [a b]
   (let [a-pp (with-out-str (pp/pprint (nested-sort a)))
         b-pp (with-out-str (pp/pprint (nested-sort b)))
-        f1 (File/createTempFile "a_gui_diff" ".txt")
-        f2 (File/createTempFile "b_gui_diff" ".txt")
-        fn1 (.getCanonicalPath f1)
-        fn2 (.getCanonicalPath f2)]
-    (spit f1 a-pp)
-    (spit f2 b-pp)
-    (.start (Thread. (fn [] (apply sh/sh (diff-prog fn1 fn2)))))))
+        file-1 (File/createTempFile "a_gui_diff" ".txt")
+        file-2 (File/createTempFile "b_gui_diff" ".txt")
+        filename-1 (.getCanonicalPath file-1)
+        filename-2 (.getCanonicalPath file-2)]
+    (spit file-1 a-pp)
+    (spit file-2 b-pp)
+    (.start (Thread. (fn [] (apply sh/sh (diff-prog filename-1 filename-2)))))))
