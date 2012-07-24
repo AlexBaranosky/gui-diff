@@ -33,6 +33,14 @@
                  (apply str "diff " filename-1 " " filename-2 ";read -p 'press Enter to continue'")])
       (throw (Exception. (str "gui-diff does not support your OS: " os))))))
 
+(defn- diff-tool
+  [filename-1 filename-2]
+  (let [^String    env-var "DIFFTOOL"
+        ^java.util.Map env (System/getenv)]
+    (if (.containsKey env env-var)
+      [(.get env env-var) filename-1 filename-2]
+      (diff-prog filename-1 filename-2))))
+
 (defn gui-diff
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
@@ -45,4 +53,4 @@
         filename-2 (.getCanonicalPath file-2)]
     (spit file-1 a-pp)
     (spit file-2 b-pp)
-    (.start (Thread. (fn [] (apply sh/sh (diff-prog filename-1 filename-2)))))))
+    (.start (Thread. (fn [] (apply sh/sh (diff-tool filename-1 filename-2)))))))
