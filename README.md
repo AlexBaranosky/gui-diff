@@ -10,6 +10,6 @@ Leiningen:
 
 Contributors
 ------------
-[Alex Baranosky](https://github.com/AlexBaranosky)
-[Shantanu Kumar](https://github.com/kumarshantanu)
-[tutysara](https://github.com/tutysara)
+* [Alex Baranosky](https://github.com/AlexBaranosky)
+* [Shantanu Kumar](https://github.com/kumarshantanu)
+* [tutysara](https://github.com/tutysara)
