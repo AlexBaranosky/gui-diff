@@ -1,3 +1,3 @@
-(defproject gui-diff "1.0.0-SNAPSHOT"
-  :description "FIXME: write description"
+(defproject gui-diff "0.1.1"
+  :description "Visual diffing of Clojure data structures"
   :dependencies [[org.clojure/clojure "1.3.0"]])
