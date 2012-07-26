@@ -76,11 +76,11 @@
 (defn failure-maps->gui-diff-report-left-and-right-side [failure-maps]
   (let [expecteds (str/join "\n"
                             (mapcat (fn [{:keys [test-name file-info expected actual]}]
-                                      [(str "Test: " test-name " FILE: " file-info) expected])
+                                      ["============================================" (format "\"%s\" :: (%s)" test-name file-info) "============================================" expected ])
                                     failure-maps))
         actuals (str/join "\n"
                           (mapcat (fn [{:keys [test-name file-info expected actual]}]
-                                    [(str "Test: " test-name " FILE: " file-info) actual])
+                                    ["============================================" (format "\"%s\" :: (%s)" test-name file-info) "============================================" actual ])
                                   failure-maps))]
     [expecteds actuals]))
 
