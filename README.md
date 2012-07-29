@@ -5,15 +5,27 @@ Works with Mac out of the box, and with Linux using Meld or xterm diff.
 
 # Usage:
 
-To include as a project dependency using Leiningen: `[gui-diff "0.2.0"]`
+To include as a project dependency using Leiningen: `[gui-diff "0.3.1"]`
 
-## Example
+##Examples
 
-```bash
-$ lein repl
-```
-```clojure
+```clj
 (require '[gui-diff.core :as gd])
+
+;; use gui-diff's clojure.test wrappers that will popup a visual diff
+;; failure report if any test fails
+(gd/run-tests++ 'mylibrary.core-test)
+(gd/run-all-tests++ #".*integration.*")
+```
+
+```clj
+;; wrap any code that sends failure information to clojure.test's *test-out*
+;; using `with-gui-diff`
+
+(gd/with-gui-diff (my-custom-test-runner))
+```
+
+```clj
 (gd/gui-diff {:a 10 :b 20 :c 30} {:a 10 :c 98 :d 34})
 ```
 

@@ -73,7 +73,7 @@
                     failure-maps)))
 
 (defn failure-maps->gui-diff-report-left-and-right-side [failure-maps]
-  [(format-failure-maps :expected) (format-failure-maps :actual)])
+  [(format-failure-maps failure-maps :expected) (format-failure-maps failure-maps :actual)])
 
 (def ^{:private true
        :doc "Capture groups: 1. name of test, 2. filename and line, 3. failing s-expr"}
