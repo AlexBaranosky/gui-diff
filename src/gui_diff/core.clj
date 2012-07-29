@@ -22,7 +22,9 @@
       i/failure-maps->gui-diff-report-left-and-right-side))
 
 (defn upgrade-to-gui-diff
-  ""
+  "Wrap any function that sends failure information to clojure.test's *test-out*
+   and returns a new function that creates visual diff report of each failure
+   that occurs when it is called."
   [test-fn]
   (fn [& args]
     (let [sw (java.io.StringWriter.)]
@@ -40,7 +42,8 @@
       (print (str sw)))))
 
 (defmacro with-gui-diff
-  ""
+  "Wrap any code that sends failure information to clojure.test's *test-out*
+   to create visual diff report of each failure."
   [& body]
   `((upgrade-to-gui-diff (fn [] ~@body))))
 

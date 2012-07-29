@@ -5,7 +5,7 @@ Works with Mac out of the box, and with Linux using Meld or xterm diff.
 
 # Usage:
 
-To include as a project dependency using Leiningen: `[gui-diff "0.3.1"]`
+To include as a project dependency using Leiningen: `[gui-diff "0.3.2"]`
 
 ##Examples
 
@@ -26,6 +26,7 @@ To include as a project dependency using Leiningen: `[gui-diff "0.3.1"]`
 ```
 
 ```clj
+Popup a visual diff of any two data structures
 (gd/gui-diff {:a 10 :b 20 :c 30} {:a 10 :c 98 :d 34})
 ```
 
