@@ -47,8 +47,10 @@
   [& body]
   `((upgrade-to-gui-diff (fn [] ~@body))))
 
-(def run-tests++ "Wraps clojure.test/run-tests to generate a gui-diff report"
+(def ^{:doc "Wraps clojure.test/run-tests to generate a gui-diff report"}
+  run-tests++
   (upgrade-to-gui-diff ct/run-tests))
 
-(def run-all-tests++ "Wraps clojure.test.run-all-tests to generate a gui-diff report"
+(def ^{:doc "Wraps clojure.test.run-all-tests to generate a gui-diff report"}
+  run-all-tests++
   (upgrade-to-gui-diff ct/run-all-tests))
