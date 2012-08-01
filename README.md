@@ -5,7 +5,7 @@ Works with Mac out of the box, and with Linux using Meld or xterm diff.
 
 # Usage:
 
-To include as a project dependency using Leiningen: `[gui-diff "0.3.3"]`
+To include as a project dependency using Leiningen: `[gui-diff "0.3.4"]`
 
 ##Examples
 
