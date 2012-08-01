@@ -59,9 +59,7 @@
   (count (str/split s #"\n")))
 
 (defn- pad-with-extra-lines [s n]
-  (if (zero? n)
-    s
-    (str/join "\n " (cons s (repeat n "")))))
+  (apply str s (repeat n "\n ")))
 
 (defn- format-failure-maps [failure-maps actual-or-expected]
   (str/join "\n"
@@ -75,12 +73,21 @@
 (defn failure-maps->gui-diff-report-left-and-right-side [failure-maps]
   [(format-failure-maps failure-maps :expected) (format-failure-maps failure-maps :actual)])
 
-(def ^{:private true
-       :doc "Capture groups: 1. name of test, 2. filename and line, 3. failing s-expr"}
-  clojure-test-failure-regex
-  #"(?ms).*?FAIL in \(([^)]+)\) \(([^)]+)\)\nexpected: \(= [^\n]+\)\n  actual: \(not ([^\n]+)\)")
+;; TODO: maybe figure out how to get this work in one pass of a larger regex
+;; like: `.*FAIL in \((.+)\) \((.+)\)\nexpected: \(\S+ .+\)\n  actual: \(not (.+)` 
 
-(defn- normalize-line-count [str1 str2]
+
+(def ^{:private true
+       :doc "Capture groups: 1. name of test, 2. filename and line"}
+   ct-test-info-regex
+  #".*FAIL in \((.+)\) \((.+)\)")
+
+(def ^{:private true
+       :doc "Capture groups: 1. failing s-expr"}
+  clojure-test-failure-regex
+  #"\nexpected: \(\S+ .+\)\n  actual: \(not (.+)\)")
+
+(defn- make-line-count-same [str1 str2]
   (let [str1 (p-str str1)
         str2 (p-str str2)
         str1-lines (num-lines str1)
@@ -90,10 +97,19 @@
                       [(pad-with-extra-lines str1 (- str2-lines str1-lines)) str2])]
     [str1 str2]))
 
+(defn- zip
+  "[[:a 1] [:b 2] [:c 3]] ;=> [[:a :b :c] [1 2 3]]"
+  [& seqs]
+  (if (empty? seqs)
+    []
+    (apply map list seqs)))
+
 (defn ct-report-str->failure-maps [ct-report-str]
-  (for [[_ test-name file-info actual-line] (re-seq clojure-test-failure-regex ct-report-str)
+  (for [[[ _ test-name file-info] [_ actual-line]] (zip
+                                                    (re-seq ct-test-info-regex ct-report-str)
+                                                    (re-seq clojure-test-failure-regex ct-report-str))
         :let [[_fn_ expected actual] (read-string actual-line)
-              [formatted-exp formatted-act] (normalize-line-count expected actual)]]
+              [formatted-exp formatted-act] (make-line-count-same expected actual)]]
     {:test-name test-name
      :file-info file-info
      :expected formatted-exp
