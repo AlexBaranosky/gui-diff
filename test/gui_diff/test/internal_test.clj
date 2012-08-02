@@ -1,14 +1,20 @@
 (ns gui-diff.test.internal-test
   (:use gui-diff.internal
-        clojure.test))
+        clojure.test)
+  (:require [ordered.map :as om]))
 
 (deftype UnComparable [x]
   Object
   (equals [this that]
     (= (.x this) (.x that))))
 
+(deftype ZZZUnComparable [x]
+  Object
+  (equals [this that]
+    (= (.x this) (.x that))))
+
 (deftest test-nested-sort
-  (are [input sorted] (= (nested-sort input) sorted)
+  (are [input sorted] (= sorted (nested-sort input))
     {} {}
     [] []
     nil nil
@@ -23,13 +29,20 @@
     {"a" 2 "b" 2 :b 1}
     {:b 1 "a" 2 "b" 2}
 
-    {:a ["a" :s 1]}
-    {:a [1 :s "a"]} ;; Integer, Keyword, String
+    {:a ["z" :s  3 2 1 :a "a"]}
+    {:a [1 2 3 :a :s "a" "z"]} ;; Integer, Keyword, String
 
     ;; structures of comparables and uncomparables put the comparables at the front
     [(UnComparable. 1) :a]
     [:a (UnComparable. 1)]
-    ))
+
+    ;; ... ditto for maps.  Also, note non-comparables still get sorted by Class name
+    {(ZZZUnComparable. :a) 1
+     (UnComparable. :c) ["b" :s 1]
+     (UnComparable. :b) ["a" :s 1]}
+    (om/ordered-map (UnComparable. :c) [1 :s "b"]
+                    (UnComparable. :b) [1 :s "a"]
+                    (ZZZUnComparable. :a) 1)))
 
 
 
