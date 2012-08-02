@@ -2,6 +2,10 @@
   (:use gui-diff.internal
         clojure.test))
 
+(deftype UnComparable [x]
+  Object
+  (equals [this that]
+    (= (.x this) (.x that))))
 
 (deftest test-nested-sort
   (are [input sorted] (= (nested-sort input) sorted)
@@ -15,9 +19,17 @@
     {:b 1 :a 2}
     {:a 2 :b 1}
 
-    ;; handles keys of different types by sorting them in groups by their class
-    {"a" 2 :b 1}
-    {:b 1 "a" 2}))
+    ;; handles keys of different types by sorting them in groups by their Class name
+    {"a" 2 "b" 2 :b 1}
+    {:b 1 "a" 2 "b" 2}
+
+    {:a ["a" :s 1]}
+    {:a [1 :s "a"]} ;; Integer, Keyword, String
+
+    ;; structures of comparables and uncomparables put the comparables at the front
+    [(UnComparable. 1) :a]
+    [:a (UnComparable. 1)]
+    ))
 
 
 
