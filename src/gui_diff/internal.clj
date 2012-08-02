@@ -1,7 +1,8 @@
 (ns gui-diff.internal
   (:require [clojure.java.shell :as sh]
             [clojure.pprint :as pp]
-            [clojure.string :as str])
+            [clojure.string :as str]
+            [ordered.map :as om])
   (:import java.io.File))
 
 (defn- map-values [f m]
@@ -9,21 +10,48 @@
     (keys m)
     (map f (vals m))))
 
+(defn- map-keys [f m]
+  (zipmap
+   (map f (keys m))
+   (vals m)))
+
+(defn- last-piece-of-ns-qualified-class-name [clazz]
+  (last (clojure.string/split (str clazz) #"\.")))
+
+(defn- grouped-comparables-and-uncomparables [xs]
+  (let [[comparable uncomparable] ((juxt filter remove) #(instance? java.lang.Comparable %) xs)
+        group+format+sort (fn [xs]
+                            (->> (group-by class xs)
+                                 (map-keys last-piece-of-ns-qualified-class-name)
+                                 (into (sorted-map))))]
+    [(group+format+sort comparable)
+     (group+format+sort uncomparable)]))
+
 (defn nested-sort [x]
-  (cond (sequential? x)
-    (if (instance? java.lang.Comparable (first x))
-      (sort (map nested-sort x))
-      (map nested-sort x))
-
-    (map? x)
-    (if (and (not= {} x)
-             (instance? java.lang.Comparable (key (first x))))
-      (into (sorted-map) (map-values nested-sort x))
-      (map-values nested-sort x))
-
-    :else
-    x))
-
+  (letfn [(seq-in-order-by-class
+            [class-name->items sort?]
+            (for [[_clazz_ xs] class-name->items
+                  x (if sort? (sort xs) xs)]
+              x))
+          (map-in-order-by-class
+            [m class-name->keys sort?]
+            (into (om/ordered-map)
+                  (for [[_clazz_ ks] class-name->keys
+                        k (if sort? (sort ks) ks)]
+                    [k (nested-sort (get m k))])))]
+    
+    (cond (sequential? x)
+          (let [[comps uncomps] (grouped-comparables-and-uncomparables x)]
+            (concat (seq-in-order-by-class comps true)
+                    (seq-in-order-by-class uncomps false)))
+          
+          (map? x)
+          (let [[comps uncomps] (grouped-comparables-and-uncomparables (keys x))]
+            (into (map-in-order-by-class x comps true)
+                  (map-in-order-by-class x uncomps false)))
+          
+          :else
+          x)))
 
 (def p ^{:doc "Nested sorts, then pretty prints a clojure data structure."}
   (comp pp/pprint nested-sort))
@@ -85,7 +113,7 @@
 (def ^{:private true
        :doc "Capture groups: 1. failing s-expr"}
   clojure-test-failure-regex
-  #"\nexpected: \(\S+ .+\)\n  actual: \(not (.+)\)")
+  #"\nexpected: \(\S+ .+\)\n.*  actual: \(not (.+)\)")
 
 (defn- make-line-count-same [str1 str2]
   (let [str1 (p-str str1)
