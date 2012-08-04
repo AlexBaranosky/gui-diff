@@ -51,6 +51,9 @@
           (let [[comps uncomps] (grouped-comparables-and-uncomparables (keys x))]
             (into (map-in-order-by-class x comps true)
                   (map-in-order-by-class x uncomps false)))
+
+          (sequential? x)
+          (map nested-sort x)
           
           :else
           x)))

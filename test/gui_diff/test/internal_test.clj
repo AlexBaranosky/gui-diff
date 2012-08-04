@@ -26,6 +26,10 @@
     {:b 1 :a 2}
     {:a 2 :b 1}
 
+    [{:b 2 :a {:c {:d 3} :b 2 :a 1 }}]
+    [(om/ordered-map :a (om/ordered-map :a 1 :b 2 :c (om/ordered-map :d 3))
+                     :b 2)]
+
     ;; handles keys of different types by sorting them in groups by their Class name
     {"a" 2 "b" 2 :b 1}
     {:b 1 "a" 2 "b" 2}
