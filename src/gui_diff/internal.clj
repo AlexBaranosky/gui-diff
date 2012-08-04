@@ -2,7 +2,8 @@
   (:require [clojure.java.shell :as sh]
             [clojure.pprint :as pp]
             [clojure.string :as str]
-            [ordered.map :as om])
+            [ordered.map :as om]
+            [ordered.set :as os])
   (:import java.io.File))
 
 (defn- map-values [f m]
@@ -40,10 +41,11 @@
                         k (if sort? (sort ks) ks)]
                     [k (nested-sort (get m k))])))]
     
-    (cond (sequential? x)
+    (cond (set? x)
           (let [[comps uncomps] (grouped-comparables-and-uncomparables x)]
-            (concat (seq-in-order-by-class comps true)
-                    (seq-in-order-by-class uncomps false)))
+            (into (os/ordered-set)
+                  (concat (seq-in-order-by-class comps true)
+                          (seq-in-order-by-class uncomps false))))
           
           (map? x)
           (let [[comps uncomps] (grouped-comparables-and-uncomparables (keys x))]

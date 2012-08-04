@@ -1,7 +1,8 @@
 (ns gui-diff.test.internal-test
   (:use gui-diff.internal
         clojure.test)
-  (:require [ordered.map :as om]))
+  (:require [ordered.map :as om]
+            [ordered.set :as os]))
 
 (deftype UnComparable [x]
   Object
@@ -29,19 +30,19 @@
     {"a" 2 "b" 2 :b 1}
     {:b 1 "a" 2 "b" 2}
 
-    {:a ["z" :s  3 2 1 :a "a"]}
-    {:a [1 2 3 :a :s "a" "z"]} ;; Integer, Keyword, String
+    #{"z" :s  3 2 1 :a "a"}
+    (os/ordered-set 1 2 3 :a :s "a" "z") ;; Integer, Keyword, String
 
     ;; structures of comparables and uncomparables put the comparables at the front
-    [(UnComparable. 1) :a]
-    [:a (UnComparable. 1)]
+    #{(UnComparable. 1) :a}
+    (os/ordered-set :a (UnComparable. 1))
 
     ;; ... ditto for maps.  Also, note non-comparables still get sorted by Class name
     {(ZZZUnComparable. :a) 1
-     (UnComparable. :c) ["b" :s 1]
-     (UnComparable. :b) ["a" :s 1]}
-    (om/ordered-map (UnComparable. :c) [1 :s "b"]
-                    (UnComparable. :b) [1 :s "a"]
+     (UnComparable. :c) #{"b" :s 1}
+     (UnComparable. :b) #{"a" :s 1}}
+    (om/ordered-map (UnComparable. :c) (os/ordered-set 1 :s "b")
+                    (UnComparable. :b) (os/ordered-set 1 :s "a")
                     (ZZZUnComparable. :a) 1)))
 
 
