@@ -47,8 +47,13 @@
      (UnComparable. :b) #{"a" :s 1}}
     (om/ordered-map (UnComparable. :c) (os/ordered-set 1 :s "b")
                     (UnComparable. :b) (os/ordered-set 1 :s "a")
-                    (ZZZUnComparable. :a) 1)))
+                    (ZZZUnComparable. :a) 1))
 
+  (testing "Sort preserves classses"
+      (is (= clojure.lang.PersistentVector (class (nested-sort []))))
+      (is (= clojure.lang.PersistentVector (class (nested-sort [4 3 2 1]))))
+      (is (= clojure.lang.PersistentList$EmptyList (class (nested-sort '()))))
+      (is (= clojure.lang.PersistentList (class (nested-sort '(4 3 2 1)))))))
 
 
 (def single-FAIL "FAIL in (test-fail) (NO_SOURCE_FILE:6)

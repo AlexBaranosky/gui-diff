@@ -53,7 +53,7 @@
                   (map-in-order-by-class x uncomps false)))
 
           (sequential? x)
-          (map nested-sort x)
+          (into (empty x) (map nested-sort x))
           
           :else
           x)))
