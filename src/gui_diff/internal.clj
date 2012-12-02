@@ -52,8 +52,11 @@
             (into (map-in-order-by-class x comps true)
                   (map-in-order-by-class x uncomps false)))
 
+          (vector? x)
+          (into [] (map nested-sort x))
+
           (sequential? x)
-          (into (empty x) (map nested-sort x))
+          (reverse (into '() (map nested-sort x)))
           
           :else
           x)))
