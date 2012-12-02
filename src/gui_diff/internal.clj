@@ -55,7 +55,7 @@
           (vector? x)
           (into [] (map nested-sort x))
 
-          (sequential? x)
+          (list? x)
           (reverse (into '() (map nested-sort x)))
           
           :else
