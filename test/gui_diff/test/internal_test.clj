@@ -21,6 +21,17 @@
     nil nil
     #{} #{}
 
+    ;; plain sequences do not get sorted
+    [1 4 3] [1 4 3]
+    (map identity [1 4 3]) '(1 4 3)
+    '(1 4 3) '(1 4 3)
+    ;; but their contents do
+    [#{2 1 20000 3 4} {:c 1 :a 2 :b 3}]
+    [#{1 2 3 4 20000} {:a 2 :b 3 :c 1}]
+    
+    '({"conj" conj, "inc" inc, "dec" dec} #{"f" "m" "3"})
+    '({"conj" conj, "dec" dec, "inc" inc} #{"3" "f" "m"})
+
     ;;
     
     {:b 1 :a 2}
