@@ -1,20 +1,24 @@
 (ns gui-diff.core
-  (:require 
-            [clojure.java.shell :as sh]
+  (:require [clojure.java.shell :as sh]
             [clojure.test :as ct]
             [gui-diff.internal :as i])
   (:import java.io.File))
 
 
+(defn- gui-diff-strings [expected actual]
+  (let [file-1 (doto (File/createTempFile (str "a_gui_diff" (java.util.UUID/randomUUID)) ".txt")
+                 .deleteOnExit)
+        file-2 (doto (File/createTempFile (str "b_gui_diff" (java.util.UUID/randomUUID)) ".txt")
+                 .deleteOnExit)]
+    (spit file-1 expected)
+    (spit file-2 actual)
+    (i/diff-files file-1 file-2)))
+
 (defn gui-diff
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
   [a b]
-  (let [file-1 (File/createTempFile "a_gui_diff" ".txt")
-        file-2 (File/createTempFile "b_gui_diff" ".txt")]
-    (spit file-1 (i/p-str a))
-    (spit file-2 (i/p-str b))
-    (i/diff-files file-1 file-2)))
+  (gui-diff-strings (i/p-str a) (i/p-str b)))
 
 (defn- ct-output->gui-diff-report [ct-report-str]
   (-> ct-report-str
@@ -33,11 +37,7 @@
 
       (let [[expecteds actuals]  (ct-output->gui-diff-report (str sw))]
         (when-not (empty? expecteds)
-          (let [file-1 (File/createTempFile "a_gui_diff_report" ".txt")
-                file-2 (File/createTempFile "b_gui_diff_report" ".txt")]
-            (spit file-1 expecteds)
-            (spit file-2 actuals)
-            (i/diff-files file-1 file-2))))
+          (gui-diff-strings expecteds actuals)))
       
       (print (str sw)))))
 
