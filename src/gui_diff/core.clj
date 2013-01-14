@@ -3,6 +3,7 @@
             [clojure.pprint :as pp]
             [clojure.string :as str]
             [clojure.test :as ct]
+            [gui-diff.parser :as parser]
             [ordered.map :as om]
             [ordered.set :as os])
   (:import java.io.File))
@@ -145,7 +146,7 @@
   (for [[[ _ test-name file-info] [_ actual-line]] (zip
                                                     (re-seq ct-test-info-regex ct-report-str)
                                                     (re-seq clojure-test-failure-regex ct-report-str))
-        :let [[_fn_ expected actual] (read-string actual-line)
+        :let [[_fn_ expected actual] (parser/parse-= actual-line)
               [formatted-exp formatted-act] (make-line-count-same expected actual)]]
     {:test-name test-name
      :file-info file-info

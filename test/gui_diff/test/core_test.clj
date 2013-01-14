@@ -113,7 +113,7 @@ expected: (= {:A 1} {:a 1, :b 2, :c 3, :d 4, :e 5})
   (is (= [{:test-name "test-fail-high"
            :file-info "NO_SOURCE_FILE:67"
            :expected "{:A 1}\n\n \n \n \n "
-           :actual "{:a 11111,\n :b 2,\n :c 33333777776666622222921347128472847124871472340,\n :d 4,\n :e 55555}\n"}]
+           :actual "{:a 11111,\n :b 2,\n :c 33333777776666622222921347128472847124871472340N,\n :d 4,\n :e 55555}\n"}]
          (#'gd/ct-report-str->failure-maps different-heights-FAIL))))
 
 (def regression-string-2
