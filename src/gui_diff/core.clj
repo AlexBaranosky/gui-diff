@@ -142,12 +142,17 @@
     []
     (apply map list seqs)))
 
+(defn- reportable-failure? [[f _expected_ _actual_ :as failure]]
+  (and (= 3 (count failure))
+       (= f '=)))
+
 (defn- ct-report-str->failure-maps [ct-report-str]
   (for [[[ _ test-name file-info] [_ actual-line]] (zip
                                                     (re-seq ct-test-info-regex ct-report-str)
                                                     (re-seq clojure-test-failure-regex ct-report-str))
-        :let [[_fn_ expected actual] (parser/parse-= actual-line)
-              [formatted-exp formatted-act] (make-line-count-same expected actual)]]
+        :let [[_fn_ expected actual :as failure] (parser/parse-= actual-line)
+              [formatted-exp formatted-act] (make-line-count-same expected actual)]
+        :when (reportable-failure? failure)]
     {:test-name test-name
      :file-info file-info
      :expected formatted-exp

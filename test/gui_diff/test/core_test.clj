@@ -74,8 +74,8 @@
 
 
 (def single-FAIL "FAIL in (test-fail) (NO_SOURCE_FILE:6)
-expected: (foo? 1 2)
-  actual: (not (foo? 1 2))")
+expected: (= 1 2)
+  actual: (not (= 1 2))")
 
 (def multiple-FAILs "
 
@@ -85,7 +85,15 @@ expected: (= 1 2)
 
 FAIL in (test-fail-more) (NO_SOURCE_FILE:67)
 expected: (= {:A 1} {:a 1, :b 2, :c 3, :d 4, :e 5})
-  actual: (not (= {:A 1} {:a 1, :c 3, :b 2, :d 4, :e 5}))")
+  actual: (not (= {:A 1} {:a 1, :c 3, :b 2, :d 4, :e 5}))
+
+FAIL in (testing-dependents-version-gets-incremented-ech-digest-update) (access_spec.clj:222)
+expected: (not= (:dependents-version (fetch-digest \"14\" 3333)) 3)
+  actual: (not (no= 3 3))
+
+FAIL in (testing-dependents-version-gets-incremented-ech-digest-update) (access_spec.clj:222)
+expected: (pos? 3)
+  actual: (not (pos? 3))")
 
 (def different-heights-FAIL "FAIL in (test-fail-high) (NO_SOURCE_FILE:67)
 expected: (= {:A 1} {:a 1, :b 2, :c 3, :d 4, :e 5})
