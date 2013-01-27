@@ -1,6 +1,6 @@
 (ns gui-diff.test.parser-test
   (:use clojure.test
-        gui-diff.parser
+        gui-diff.internal.parser
         gui-diff.core))
 
 

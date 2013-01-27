@@ -3,7 +3,7 @@
             [clojure.pprint :as pp]
             [clojure.string :as str]
             [clojure.test :as ct]
-            [gui-diff.parser :as parser]
+            [gui-diff.internal.parser :as parser]
             [ordered.map :as om]
             [ordered.set :as os])
   (:import java.io.File))
