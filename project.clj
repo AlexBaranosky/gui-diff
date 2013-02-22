@@ -6,5 +6,5 @@
                  [ordered "1.2.0"]]
   :profiles {:1.3.0 {:dependencies [[org.clojure/clojure "1.3.0"]]}
              :1.4.0 {:dependencies [[org.clojure/clojure "1.4.0"]]}
-             :1.5.0 {:dependencies [[org.clojure/clojure "1.5.0-RC4"]]}}
+             :1.5.0 {:dependencies [[org.clojure/clojure "1.5.0-RC16"]]}}
   :aliases {"run-tests" ["with-profile" "1.3.0:1.4.0:1.5.0" "test"]})
