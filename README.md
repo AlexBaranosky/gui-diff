@@ -7,6 +7,11 @@ Works with Mac out of the box, and with Linux using Meld or xterm diff.
 
 To include as a project dependency using Leiningen: `[gui-diff "0.4.0"]`
 
+##Travis CI Status
+
+[![Build Status](https://travis-ci.org/AlexBaranosky/gui-diff.png)](https://travis-ci.org/AlexBaranosky/gui-diff)
+
+
 ##Examples
 
 ```clj

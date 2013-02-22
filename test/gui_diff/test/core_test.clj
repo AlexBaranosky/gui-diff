@@ -14,11 +14,14 @@
 (deftype UnComparable [x]
   Object
   (equals [this that]
-    (= (.x this) (.x that))))
+    (and (instance? UnComparable that)
+         (= (.x this) (.x that)))))
+
 (deftype ZZZUnComparable [x]
   Object
   (equals [this that]
-    (= (.x this) (.x that))))
+    (and (instance? ZZZUnComparable that)
+         (= (.x this) (.x that)))))
 
 (deftest test-nested-sort
   (are [input sorted] (= sorted (nested-sort input))
