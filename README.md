@@ -5,7 +5,7 @@ Works with Mac out of the box, and with Linux using Meld or xterm diff.
 
 # Usage:
 
-To include as a project dependency using Leiningen: `[gui-diff "0.4.0"]`
+To include as a project dependency using Leiningen: `[gui-diff "0.5.0"]`
 
 ##Travis CI Status
 
@@ -15,24 +15,24 @@ To include as a project dependency using Leiningen: `[gui-diff "0.4.0"]`
 ##Examples
 
 ```clj
+(require '[gui.diff :refer :all])
+
 ;; popup a visual diff of any two data structures
-(gd/gui-diff {:a 10 :b 20 :c 30} {:a 10 :c 98 :d 34})
+(gui-diff {:a 10 :b 20 :c 30} {:a 10 :c 98 :d 34})
 ```
 
 ```clj
 ;; wrap any code that sends failure information to clojure.test's *test-out*
 ;; using `with-gui-diff`
 
-(gd/with-gui-diff (my-custom-test-runner))
+(with-gui-diff (my-custom-test-runner))
 ```
 
 ```clj
-(require '[gui-diff.core :as gd])
-
 ;; use gui-diff's clojure.test wrappers that will popup a visual diff
 ;; failure report if any test fails
-(gd/run-tests++ 'mylibrary.core-test)
-(gd/run-all-tests++ #".*integration.*")
+(run-tests++ 'mylibrary.core-test)
+(run-all-tests++ #".*integration.*")
 ```
 
 ## Override the diff tool

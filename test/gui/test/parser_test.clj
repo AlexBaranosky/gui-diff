@@ -1,7 +1,7 @@
-(ns gui-diff.test.parser-test
+(ns gui.test.parser-test
   (:use clojure.test
-        gui-diff.internal.parser
-        gui-diff.core))
+        gui.internal.parser
+        gui.diff))
 
 
 (deftest test-parser

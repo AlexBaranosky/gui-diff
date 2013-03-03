@@ -1,9 +1,9 @@
-(ns gui-diff.core
+(ns gui.diff
   (:require [clojure.java.shell :as sh]
             [clojure.pprint :as pp]
             [clojure.string :as str]
             [clojure.test :as ct]
-            [gui-diff.internal.parser :as parser]
+            [gui.internal.parser :as parser]
             [ordered.map :as om]
             [ordered.set :as os])
   (:import java.io.File))

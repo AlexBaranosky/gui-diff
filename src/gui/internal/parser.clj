@@ -1,4 +1,4 @@
-(ns gui-diff.internal.parser
+(ns gui.internal.parser
   (:require [net.cgrand.sjacket.parser :as parser]))
 
 

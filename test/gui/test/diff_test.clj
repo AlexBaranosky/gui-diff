@@ -1,13 +1,13 @@
-(ns gui-diff.test.core-test
-  (:use gui-diff.core
+(ns gui.test.diff_test
+  (:use gui.diff
         clojure.test)
-  (:require [gui-diff.core :as gd]
+  (:require [gui.diff :as gd]
             [ordered.map :as om]
             [ordered.set :as os]))
 
 
 (deftest test-all-public-var-have-doc-strings
-  (is (empty? (->> (ns-publics 'gui-diff.core)
+  (is (empty? (->> (ns-publics 'gui.diff)
                    vals
                    (remove (comp :doc meta))))))
 
