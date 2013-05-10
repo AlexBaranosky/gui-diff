@@ -18,7 +18,8 @@
   (last (clojure.string/split (str clazz) #"\.")))
 
 (defn- grouped-comparables-and-uncomparables [xs]
-  (let [[comparable uncomparable] ((juxt filter remove) #(instance? java.lang.Comparable %) xs)
+  (let [[comparable uncomparable] ((juxt filter remove)
+                                   #(instance? java.lang.Comparable %) xs)
         group+format+sort (fn [xs]
                             (->> (group-by class xs)
                                  (map-keys last-piece-of-ns-qualified-class-name)
@@ -41,13 +42,13 @@
                   (for [[_clazz_ ks] class-name->keys
                         k (if sort? (sort ks) ks)]
                     [k (nested-sort (get m k))])))]
-    
+
     (cond (set? x)
           (let [[comps uncomps] (grouped-comparables-and-uncomparables x)]
             (into (os/ordered-set)
                   (concat (seq-in-order-by-class comps true)
                           (seq-in-order-by-class uncomps false))))
-          
+
           (map? x)
           (let [[comps uncomps] (grouped-comparables-and-uncomparables (keys x))]
             (into (map-in-order-by-class x comps true)
@@ -58,7 +59,7 @@
 
           (list? x)
           (reverse (into '() (map nested-sort x)))
-          
+
           :else
           x)))
 
@@ -78,7 +79,8 @@
       "Linux" (if (= 0 (:exit (sh/sh "which" "meld")))
                 ["meld" filename-1 filename-2]
                 ["xterm" "-e"
-                 (apply str "diff " filename-1 " " filename-2 ";read -p 'press Enter to continue'")])
+                 (apply str "diff " filename-1 " "
+                        filename-2 ";read -p 'press Enter to continue'")])
       (throw (Exception. (str "gui-diff does not support your OS: " os))))))
 
 (defn- diff-tool [filename-1 filename-2]
@@ -101,7 +103,8 @@
 
 (defn- format-failure-maps [failure-maps actual-or-expected]
   (str/join "\n"
-            (mapcat (fn [{:keys [test-name file-info expected actual] :as failure-map}]
+            (mapcat (fn [{:keys [test-name file-info expected actual]
+                          :as failure-map}]
                       ["============================================"
                        (format "\"%s\" :: (%s)" test-name file-info)
                        "============================================"
@@ -109,11 +112,11 @@
                     failure-maps)))
 
 (defn- failure-maps->gui-diff-report-left-and-right-side [failure-maps]
-  [(format-failure-maps failure-maps :expected) (format-failure-maps failure-maps :actual)])
+  [(format-failure-maps failure-maps :expected)
+   (format-failure-maps failure-maps :actual)])
 
 ;; TODO: maybe figure out how to get this work in one pass of a larger regex
-;; like: `.*FAIL in \((.+)\) \((.+)\)\nexpected: \(\S+ .+\)\n  actual: \(not (.+)` 
-
+;; like: `.*FAIL in \((.+)\) \((.+)\)\nexpected: \(\S+ .+\)\n  actual: \(not (.+)`
 
 (def ^{:private true
        :doc "Capture groups: 1. name of test, 2. filename and line"}
@@ -131,8 +134,10 @@
         str1-lines (num-lines str1)
         str2-lines (num-lines str2)
         [str1 str2] (if (> str1-lines str2-lines)
-                      [str1 (pad-with-extra-lines str2 (- str1-lines str2-lines))]
-                      [(pad-with-extra-lines str1 (- str2-lines str1-lines)) str2])]
+                      [str1 (pad-with-extra-lines str2
+                              (- str1-lines str2-lines))]
+                      [(pad-with-extra-lines str1
+                         (- str2-lines str1-lines)) str2])]
     [str1 str2]))
 
 (defn- zip
@@ -147,9 +152,10 @@
        (= f '=)))
 
 (defn- ct-report-str->failure-maps [ct-report-str]
-  (for [[[ _ test-name file-info] [_ actual-line]] (zip
-                                                    (re-seq ct-test-info-regex ct-report-str)
-                                                    (re-seq clojure-test-failure-regex ct-report-str))
+  (for [[[ _ test-name file-info] [_ actual-line]]
+        (zip
+         (re-seq ct-test-info-regex ct-report-str)
+         (re-seq clojure-test-failure-regex ct-report-str))
         :let [[_fn_ expected actual :as failure] (parser/parse-= actual-line)
               [formatted-exp formatted-act] (make-line-count-same expected actual)]
         :when (reportable-failure? failure)]
@@ -159,16 +165,21 @@
      :actual formatted-act}))
 
 
-(defn- gui-diff-strings [expected actual]
-  (let [file-1 (doto (File/createTempFile (str "a_gui_diff" (java.util.UUID/randomUUID)) ".txt")
+(defn gui-diff-strings
+  "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
+   On Linux, first tries to use Meld, then falls back to diff."
+  [expected actual]
+  (let [file-1 (doto (File/createTempFile
+                      (str "a_gui_diff" (java.util.UUID/randomUUID)) ".txt")
                  .deleteOnExit)
-        file-2 (doto (File/createTempFile (str "b_gui_diff" (java.util.UUID/randomUUID)) ".txt")
+        file-2 (doto (File/createTempFile
+                      (str "b_gui_diff" (java.util.UUID/randomUUID)) ".txt")
                  .deleteOnExit)]
     (spit file-1 expected)
     (spit file-2 actual)
     (diff-files file-1 file-2)))
 
-(defn gui-diff
+(defmacro gui-diff
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
   [a b]
@@ -192,7 +203,7 @@
       (let [[expecteds actuals]  (ct-output->gui-diff-report (str sw))]
         (when-not (empty? expecteds)
           (gui-diff-strings expecteds actuals)))
-      
+
       (print (str sw)))))
 
 (defmacro with-gui-diff
