@@ -165,7 +165,10 @@
      :actual formatted-act}))
 
 
-(defn- gui-diff-strings [expected actual]
+(defn gui-diff-strings
+  "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
+   On Linux, first tries to use Meld, then falls back to diff."
+  [expected actual]
   (let [file-1 (doto (File/createTempFile
                       (str "a_gui_diff" (java.util.UUID/randomUUID)) ".txt")
                  .deleteOnExit)
