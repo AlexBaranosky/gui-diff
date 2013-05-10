@@ -176,7 +176,7 @@
     (spit file-2 actual)
     (diff-files file-1 file-2)))
 
-(defn gui-diff
+(defmacro gui-diff
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
   [a b]
