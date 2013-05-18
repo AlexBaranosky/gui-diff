@@ -175,15 +175,15 @@
         file-2 (doto (File/createTempFile
                       (str "b_gui_diff" (java.util.UUID/randomUUID)) ".txt")
                  .deleteOnExit)]
-    (spit file-1 expected)
-    (spit file-2 actual)
+    (spit file-1 (p-str expected))
+    (spit file-2 (p-str actual))
     (diff-files file-1 file-2)))
 
 (defmacro gui-diff
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
   [a b]
-  (gui-diff-strings (p-str a) (p-str b)))
+  `(gui-diff-strings '~a '~b))
 
 (defn- ct-output->gui-diff-report [ct-report-str]
   (-> ct-report-str
