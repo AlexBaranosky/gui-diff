@@ -131,8 +131,14 @@ expected: (= {:A 1} {:a 1, :b 2, :c 3, :d 4, :e 5})
          (#'gd/ct-report-str->failure-maps different-heights-FAIL))))
 
 (deftest no-evaluate-args
-  (is (= nil (gd/gui-diff (1 2 3) (4 5 6))))
-  (is (= nil (gd/gui-diff '(1 2 3) '(4 5 6)))))
+  (testing "gui diff does not evaluate its args"
+    (is (= (macroexpand '(gui.diff/gui-diff (1 2 3)
+                                            (4 5 6)))
+           '(gui.diff/gui-diff-strings (quote (1 2 3))
+                                       (quote (4 5 6)))))
+    (is (= '[(1 2 3) (4 5 6)]
+           (with-redefs [gui.diff/gui-diff-strings vector]
+             (gd/gui-diff (1 2 3) (4 5 6)))))))
 
 (def regression-string-2
   "
