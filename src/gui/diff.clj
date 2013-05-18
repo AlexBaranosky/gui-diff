@@ -67,7 +67,10 @@
   p
   (comp pp/pprint nested-sort))
 
-(defmacro p-macro [x]
+(defmacro p-macro
+  "Like gui.diff/p but doesn't evaluate its args.
+   Good for printing data that has unresolvable symbols in it"
+  [x]
   `(p '~x))
 
 (defn p-str
