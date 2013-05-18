@@ -67,6 +67,9 @@
   p
   (comp pp/pprint nested-sort))
 
+(defmacro p-macro [x]
+  `(p '~x))
+
 (defn p-str
   "Like p but prints the output to a string."
   [x]
