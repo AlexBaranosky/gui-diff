@@ -1,6 +1,6 @@
 (ns gui.diff
   (:require [clojure.java.shell :as sh]
-            [clojure.pprint :as pp]
+            [fipp.edn :as pp]
             [clojure.string :as str]
             [clojure.test :as ct]
             [gui.internal.parser :as parser]
