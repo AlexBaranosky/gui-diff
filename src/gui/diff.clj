@@ -171,7 +171,7 @@
      :actual formatted-act}))
 
 
-(defn gui-diff-strings
+(defn gui-diff-data
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
   [expected actual]
@@ -181,15 +181,15 @@
         file-2 (doto (File/createTempFile
                       (str "b_gui_diff" (java.util.UUID/randomUUID)) ".txt")
                  .deleteOnExit)]
-    (spit file-1 (p-str expected))
-    (spit file-2 (p-str actual))
+    (spit file-1 (if (string? expected) expected (p-str expected)))
+    (spit file-2 (if (string? actual) actual (p-str actual)))
     (diff-files file-1 file-2)))
 
 (defmacro gui-diff
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
   [a b]
-  `(gui-diff-strings '~a '~b))
+  `(gui-diff-data '~a '~b))
 
 (defn- ct-output->gui-diff-report [ct-report-str]
   (-> ct-report-str
@@ -208,7 +208,7 @@
 
       (let [[expecteds actuals]  (ct-output->gui-diff-report (str sw))]
         (when-not (empty? expecteds)
-          (gui-diff-strings expecteds actuals)))
+          (gui-diff-data expecteds actuals)))
 
       (print (str sw)))))
 
