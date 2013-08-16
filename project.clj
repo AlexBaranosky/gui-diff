@@ -1,4 +1,4 @@
-(defproject gui-diff "0.6.2"
+(defproject gui-diff "0.6.3"
   :min-lein-version "2.0.0"
   :description "Visual diffing of Clojure data structures"
   :dependencies [[fipp "0.4.0"]
