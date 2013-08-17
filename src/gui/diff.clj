@@ -55,10 +55,10 @@
                   (map-in-order-by-class x uncomps false)))
 
           (vector? x)
-          (into [] (map nested-sort x))
+          (vec (map nested-sort x))
 
           (list? x)
-          (reverse (into '() (map nested-sort x)))
+          (reverse (into () (map nested-sort x)))
 
           :else
           x)))
