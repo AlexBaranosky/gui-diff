@@ -43,6 +43,11 @@ You can specify your own diff tool by setting the DIFFTOOL environment variable.
 $ DIFFTOOL=kdiff3 lein repl
 ```
 
+License
+-------
+
+MIT License
+
 Contributors
 ------------
 * [Alex Baranosky](https://github.com/AlexBaranosky)
