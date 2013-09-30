@@ -200,3 +200,8 @@ java.lang.NullPointerException (spec_unit_suite.clj:0)  actual: (not (= ({:locke
 
 ;; TODO: test exps/acts/ with differenet lengths/heights space properly in the
 ;; diff report
+
+(comment
+  (deftest foo-test
+    (is (= {:a 1 :b 2}
+           {:a 2 :b 3}))))

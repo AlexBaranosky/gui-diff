@@ -76,7 +76,9 @@
 (defn p-str
   "Like p but prints the output to a string."
   [x]
-  (with-out-str (p x)))
+  (if (string? x)
+    x
+    (with-out-str (p x))))
 
 (defn- diff-prog [filename-1 filename-2]
   (let [os (System/getProperty "os.name")]
@@ -146,22 +148,15 @@
                          (- str2-lines str1-lines)) str2])]
     [str1 str2]))
 
-(defn- zip
-  "[[:a 1] [:b 2] [:c 3]] ;=> [[:a :b :c] [1 2 3]]"
-  [& seqs]
-  (if (empty? seqs)
-    []
-    (apply map list seqs)))
-
 (defn- reportable-failure? [[f _expected_ _actual_ :as failure]]
   (and (= 3 (count failure))
        (= f '=)))
 
 (defn- ct-report-str->failure-maps [ct-report-str]
   (for [[[ _ test-name file-info] [_ actual-line]]
-        (zip
-         (re-seq ct-test-info-regex ct-report-str)
-         (re-seq clojure-test-failure-regex ct-report-str))
+        (map list
+             (re-seq ct-test-info-regex ct-report-str)
+             (re-seq clojure-test-failure-regex ct-report-str))
         :let [[_fn_ expected actual :as failure] (parser/parse-= actual-line)
               [formatted-exp formatted-act] (make-line-count-same expected actual)]
         :when (reportable-failure? failure)]
@@ -175,14 +170,12 @@
   "Display a visual diff of two data structures, a and b. On Mac uses FileMerge.
    On Linux, first tries to use Meld, then falls back to diff."
   [expected actual]
-  (let [file-1 (doto (File/createTempFile
-                      (str "a_gui_diff" (java.util.UUID/randomUUID)) ".txt")
+  (let [file-1 (doto (File/createTempFile (str "a_gui_diff" (java.util.UUID/randomUUID)) ".txt")
                  .deleteOnExit)
-        file-2 (doto (File/createTempFile
-                      (str "b_gui_diff" (java.util.UUID/randomUUID)) ".txt")
+        file-2 (doto (File/createTempFile (str "b_gui_diff" (java.util.UUID/randomUUID)) ".txt")
                  .deleteOnExit)]
-    (spit file-1 (if (string? expected) expected (p-str expected)))
-    (spit file-2 (if (string? actual) actual (p-str actual)))
+    (spit file-1 (p-str expected))
+    (spit file-2 (p-str actual))
     (diff-files file-1 file-2)))
 
 (defmacro gui-diff
