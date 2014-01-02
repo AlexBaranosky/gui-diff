@@ -101,7 +101,7 @@
 (defn- diff-files [^File file-1 ^File file-2]
   (let [filename-1 (.getCanonicalPath file-1)
         filename-2 (.getCanonicalPath file-2)]
-   (.start (Thread. (fn [] (apply sh/sh (diff-tool filename-1 filename-2)))))))
+    (.start (Thread. (fn [] (apply sh/sh (diff-tool filename-1 filename-2)))))))
 
 (defn- num-lines [s]
   (count (str/split s #"\n")))
@@ -128,7 +128,7 @@
 
 (def ^{:private true
        :doc "Capture groups: 1. name of test, 2. filename and line"}
-   ct-test-info-regex
+  ct-test-info-regex
   #".*FAIL in \((.+)\) \((.+)\)")
 
 (def ^{:private true
@@ -143,9 +143,9 @@
         str2-lines (num-lines str2)
         [str1 str2] (if (> str1-lines str2-lines)
                       [str1 (pad-with-extra-lines str2
-                              (- str1-lines str2-lines))]
+                                                  (- str1-lines str2-lines))]
                       [(pad-with-extra-lines str1
-                         (- str2-lines str1-lines)) str2])]
+                                             (- str2-lines str1-lines)) str2])]
     [str1 str2]))
 
 (defn- reportable-failure? [[f _expected_ _actual_ :as failure]]

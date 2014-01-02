@@ -25,58 +25,58 @@
 
 (deftest test-nested-sort
   (are [input sorted] (= sorted (nested-sort input))
-    {} {}
-    [] []
-    nil nil
-    #{} #{}
+       {} {}
+       [] []
+       nil nil
+       #{} #{}
 
-    ;; plain sequences do not get sorted
-    [1 4 3] [1 4 3]
-    (map identity [1 4 3]) '(1 4 3)
-    '(1 4 3) '(1 4 3)
-    ;; but their contents do
-    [#{2 1 20000 3 4} {:c 1 :a 2 :b 3}]
-    [#{1 2 3 4 20000} {:a 2 :b 3 :c 1}]
+       ;; plain sequences do not get sorted
+       [1 4 3] [1 4 3]
+       (map identity [1 4 3]) '(1 4 3)
+       '(1 4 3) '(1 4 3)
+       ;; but their contents do
+       [#{2 1 20000 3 4} {:c 1 :a 2 :b 3}]
+       [#{1 2 3 4 20000} {:a 2 :b 3 :c 1}]
 
-    '({"conj" conj, "inc" inc, "dec" dec} #{"f" "m" "3"})
-    '({"conj" conj, "dec" dec, "inc" inc} #{"3" "f" "m"})
+       '({"conj" conj, "inc" inc, "dec" dec} #{"f" "m" "3"})
+       '({"conj" conj, "dec" dec, "inc" inc} #{"3" "f" "m"})
 
-    ;;
+       ;;
 
-    {:b 1 :a 2}
-    {:a 2 :b 1}
+       {:b 1 :a 2}
+       {:a 2 :b 1}
 
-    [{:b 2 :a {:c {:d 3} :b 2 :a 1 }}]
-    [(om/ordered-map :a (om/ordered-map :a 1 :b 2 :c (om/ordered-map :d 3))
-                     :b 2)]
+       [{:b 2 :a {:c {:d 3} :b 2 :a 1 }}]
+       [(om/ordered-map :a (om/ordered-map :a 1 :b 2 :c (om/ordered-map :d 3))
+                        :b 2)]
 
-    ;; handles keys of different types by sorting them in groups
-    ;; by their Class name
-    {"a" 2 "b" 2 :b 1}
-    {:b 1 "a" 2 "b" 2}
+       ;; handles keys of different types by sorting them in groups
+       ;; by their Class name
+       {"a" 2 "b" 2 :b 1}
+       {:b 1 "a" 2 "b" 2}
 
-    #{"z" :s  3 2 1 :a "a"}
-    (os/ordered-set 1 2 3 :a :s "a" "z") ;; Integer, Keyword, String
+       #{"z" :s  3 2 1 :a "a"}
+       (os/ordered-set 1 2 3 :a :s "a" "z") ;; Integer, Keyword, String
 
-    ;; structures of comparables and uncomparables put the comparables
-    ;; at the front
-    #{(UnComparable. 1) :a}
-    (os/ordered-set :a (UnComparable. 1))
+       ;; structures of comparables and uncomparables put the comparables
+       ;; at the front
+       #{(UnComparable. 1) :a}
+       (os/ordered-set :a (UnComparable. 1))
 
-    ;; ... ditto for maps.  Also, note non-comparables still get sorted
-    ;; by Class name
-    {(ZZZUnComparable. :a) 1
-     (UnComparable. :c) #{"b" :s 1}
-     (UnComparable. :b) #{"a" :s 1}}
-    (om/ordered-map (UnComparable. :c) (os/ordered-set 1 :s "b")
-                    (UnComparable. :b) (os/ordered-set 1 :s "a")
-                    (ZZZUnComparable. :a) 1))
+       ;; ... ditto for maps.  Also, note non-comparables still get sorted
+       ;; by Class name
+       {(ZZZUnComparable. :a) 1
+        (UnComparable. :c) #{"b" :s 1}
+        (UnComparable. :b) #{"a" :s 1}}
+       (om/ordered-map (UnComparable. :c) (os/ordered-set 1 :s "b")
+                       (UnComparable. :b) (os/ordered-set 1 :s "a")
+                       (ZZZUnComparable. :a) 1))
 
   (testing "Sort preserves classses"
-      (is (= clojure.lang.PersistentVector (class (nested-sort []))))
-      (is (= clojure.lang.PersistentVector (class (nested-sort [4 3 2 1]))))
-      (is (= clojure.lang.PersistentList$EmptyList (class (nested-sort '()))))
-      (is (= clojure.lang.PersistentList (class (nested-sort '(4 3 2 1)))))))
+    (is (= clojure.lang.PersistentVector (class (nested-sort []))))
+    (is (= clojure.lang.PersistentVector (class (nested-sort [4 3 2 1]))))
+    (is (= clojure.lang.PersistentList$EmptyList (class (nested-sort '()))))
+    (is (= clojure.lang.PersistentList (class (nested-sort '(4 3 2 1)))))))
 
 
 (def single-FAIL "FAIL in (test-fail) (NO_SOURCE_FILE:6)
@@ -107,14 +107,14 @@ expected: (= {:A 1} {:a 1, :b 2, :c 3, :d 4, :e 5})
 
 (deftest test-1
   (is (= [{:test-name "test-fail"
-              :file-info "NO_SOURCE_FILE:6"
-              :expected "1\n"
-              :actual "2\n"}
-             {:test-name "test-fail-more"
-              :file-info "NO_SOURCE_FILE:67"
-              :expected "{:A 1}\n"
-              :actual "{:a 1, :b 2, :c 3, :d 4, :e 5}\n"}]
-            (#'gd/ct-report-str->failure-maps multiple-FAILs))))
+           :file-info "NO_SOURCE_FILE:6"
+           :expected "1\n"
+           :actual "2\n"}
+          {:test-XXXname "test-fail-more"
+           :file-info "NO_SOURCE_FILE:67"
+           :expected "{:A 1}\n"
+           :actual "{:a 1, :b 2, :c 3, :d 4, :e 5}\n"}]
+         (#'gd/ct-report-str->failure-maps multiple-FAILs))))
 
 (deftest test-2
   (is (= [{:test-name "test-fail"
@@ -197,11 +197,3 @@ java.lang.NullPointerException (spec_unit_suite.clj:0)  actual: (not (= ({:locke
 (deftest test-regression-3
   (is (= 5
          (count (#'gd/ct-report-str->failure-maps regression-string-3)))))
-
-;; TODO: test exps/acts/ with differenet lengths/heights space properly in the
-;; diff report
-
-(comment
-  (deftest foo-test
-    (is (= {:a 1 :b 2}
-           {:a 2 :b 3}))))
