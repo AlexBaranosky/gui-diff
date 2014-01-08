@@ -110,7 +110,7 @@ expected: (= {:A 1} {:a 1, :b 2, :c 3, :d 4, :e 5})
            :file-info "NO_SOURCE_FILE:6"
            :expected "1\n"
            :actual "2\n"}
-          {:test-XXXname "test-fail-more"
+          {:test-name "test-fail-more"
            :file-info "NO_SOURCE_FILE:67"
            :expected "{:A 1}\n"
            :actual "{:a 1, :b 2, :c 3, :d 4, :e 5}\n"}]

@@ -123,9 +123,6 @@
   [(format-failure-maps failure-maps :expected)
    (format-failure-maps failure-maps :actual)])
 
-;; TODO: maybe figure out how to get this work in one pass of a larger regex
-;; like: `.*FAIL in \((.+)\) \((.+)\)\nexpected: \(\S+ .+\)\n  actual: \(not (.+)`
-
 (def ^{:private true
        :doc "Capture groups: 1. name of test, 2. filename and line"}
   ct-test-info-regex
