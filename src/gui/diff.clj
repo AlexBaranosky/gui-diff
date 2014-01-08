@@ -17,13 +17,14 @@
 (defn- last-piece-of-ns-qualified-class-name [clazz]
   (last (clojure.string/split (str clazz) #"\.")))
 
+(defn- group+format+sort [xs]
+  (->> (group-by class xs)
+       (map-keys last-piece-of-ns-qualified-class-name)
+       (into (sorted-map))))
+
 (defn- grouped-comparables-and-uncomparables [xs]
   (let [[comparable uncomparable] ((juxt filter remove)
-                                   #(instance? java.lang.Comparable %) xs)
-        group+format+sort (fn [xs]
-                            (->> (group-by class xs)
-                                 (map-keys last-piece-of-ns-qualified-class-name)
-                                 (into (sorted-map))))]
+                                   #(instance? java.lang.Comparable %) xs)]
     [(group+format+sort comparable)
      (group+format+sort uncomparable)]))
 
@@ -111,14 +112,14 @@
   (apply str s (repeat n "\n ")))
 
 (defn- format-failure-maps [failure-maps actual-or-expected]
-  (str/join "\n"
-            (mapcat (fn [{:keys [test-name file-info expected actual]
-                         :as failure-map}]
-                      ["============================================"
-                       (format "\"%s\" :: (%s)" test-name file-info)
-                       "============================================"
-                       (actual-or-expected failure-map)])
-                    failure-maps)))
+  (->> failure-maps
+       (mapcat (fn [{:keys [test-name file-info expected actual]
+                              :as failure-map}]
+                           ["============================================"
+                            (format "\"%s\" :: (%s)" test-name file-info)
+                            "============================================"
+                            (actual-or-expected failure-map)]))
+       (str/join "\n")))
 
 (defn- failure-maps->gui-diff-report-left-and-right-side [failure-maps]
   [(format-failure-maps failure-maps :expected)
