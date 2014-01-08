@@ -113,7 +113,7 @@
 (defn- format-failure-maps [failure-maps actual-or-expected]
   (str/join "\n"
             (mapcat (fn [{:keys [test-name file-info expected actual]
-                          :as failure-map}]
+                         :as failure-map}]
                       ["============================================"
                        (format "\"%s\" :: (%s)" test-name file-info)
                        "============================================"
