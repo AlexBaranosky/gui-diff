@@ -27,41 +27,42 @@
     [(group+format+sort comparable)
      (group+format+sort uncomparable)]))
 
+(defn- seq-in-order-by-class [class-name->items sort?]
+  (for [[_clazz_ xs] class-name->items
+        x (if sort? (sort xs) xs)]
+    x))
+
+(declare nested-sort)
+
+(defn- map-in-order-by-class [m class-name->keys sort?]
+  (into (om/ordered-map)
+        (for [[_clazz_ ks] class-name->keys
+              k (if sort? (sort ks) ks)]
+          [k (nested-sort (get m k))])))
+
 (defn nested-sort
   "Sorts two nested collections for easy visual comparison.
    Sets and maps are converted to order-sets and ordered-maps."
   [x]
-  (letfn [(seq-in-order-by-class
-            [class-name->items sort?]
-            (for [[_clazz_ xs] class-name->items
-                  x (if sort? (sort xs) xs)]
-              x))
-          (map-in-order-by-class
-            [m class-name->keys sort?]
-            (into (om/ordered-map)
-                  (for [[_clazz_ ks] class-name->keys
-                        k (if sort? (sort ks) ks)]
-                    [k (nested-sort (get m k))])))]
+  (cond (set? x)
+        (let [[comps uncomps] (grouped-comparables-and-uncomparables x)]
+          (into (os/ordered-set)
+                (concat (seq-in-order-by-class comps true)
+                        (seq-in-order-by-class uncomps false))))
 
-    (cond (set? x)
-          (let [[comps uncomps] (grouped-comparables-and-uncomparables x)]
-            (into (os/ordered-set)
-                  (concat (seq-in-order-by-class comps true)
-                          (seq-in-order-by-class uncomps false))))
+        (map? x)
+        (let [[comps uncomps] (grouped-comparables-and-uncomparables (keys x))]
+          (into (map-in-order-by-class x comps true)
+                (map-in-order-by-class x uncomps false)))
 
-          (map? x)
-          (let [[comps uncomps] (grouped-comparables-and-uncomparables (keys x))]
-            (into (map-in-order-by-class x comps true)
-                  (map-in-order-by-class x uncomps false)))
+        (vector? x)
+        (vec (map nested-sort x))
 
-          (vector? x)
-          (vec (map nested-sort x))
+        (list? x)
+        (reverse (into () (map nested-sort x)))
 
-          (list? x)
-          (reverse (into () (map nested-sort x)))
-
-          :else
-          x)))
+        :else
+        x))
 
 (def ^{:doc "Nested sorts, then pretty prints a clojure data structure."}
   p
