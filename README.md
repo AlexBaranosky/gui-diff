@@ -21,6 +21,8 @@ To include as a project dependency using Leiningen: `[gui-diff "0.6.2"]`
 (gui-diff {:a 10 :b 20 :c 30} {:a 10 :c 98 :d 34})
 ```
 
+![Gui-diff Screenshot](/gui-diff-screenshot.png "Gui-diff Screenshot")
+
 ```clj
 ;; wrap any code that sends failure information to clojure.test's *test-out*
 ;; using `with-gui-diff`
