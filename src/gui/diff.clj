@@ -4,8 +4,8 @@
             [clojure.string :as str]
             [clojure.test :as ct]
             [gui.internal.parser :as parser]
-            [ordered.map :as om]
-            [ordered.set :as os])
+            [flatland.ordered.map :as om]
+            [flatland.ordered.set :as os])
   (:import java.io.File))
 
 
