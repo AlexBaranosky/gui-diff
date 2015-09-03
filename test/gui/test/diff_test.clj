@@ -2,8 +2,8 @@
   (:use gui.diff
         clojure.test)
   (:require [gui.diff :as gd]
-            [ordered.map :as om]
-            [ordered.set :as os]))
+            [flatland.ordered.map :as om]
+            [flatland.ordered.set :as os]))
 
 
 (deftest test-all-public-var-have-doc-strings
