@@ -1,4 +1,4 @@
-(defproject gui-diff "0.6.5"
+(defproject gui-diff "0.6.6"
   :description "Visual diffing of Clojure data structures"
   :url "https://github.com/AlexBaranosky/gui-diff"
   :dependencies [[fipp "0.4.1"]
