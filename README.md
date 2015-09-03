@@ -5,7 +5,7 @@ Works with Mac out of the box, and with Linux using Meld or xterm diff.
 
 # Usage:
 
-To include as a project dependency using Leiningen: `[gui-diff "0.6.6"]`
+To include as a project dependency using Leiningen: `[gui-diff "0.6.7"]`
 
 ##Travis CI Status
 
